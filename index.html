@@ -33,44 +33,18 @@
             margin: 20px;
         }
 
-        .update-button {
+        .function-button {
             padding: 10px 20px;
             background-color: #355E3B;
             color: white;
             border: none;
             cursor: pointer;
             font-size: 16px;
+            margin-bottom: 10px;
         }
 
-        .update-button:hover {
+        .function-button:hover {
             background-color: #2A4730;
-        }
-
-        .show-button {
-            padding: 10px 20px;
-            background-color: #355E3B;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .show-button:hover {
-            background-color: #2A4730;
-        }
-
-        .clear-button {
-            padding: 10px 20px;
-            background-color: #355E3B;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .clear-button:hover {
-            background-color: #2A4730;
-
         }
 
         .chart-container {
@@ -86,15 +60,23 @@
     <div class="chart-container">
         <canvas id="Progrise"></canvas>
         <div class="button-container">
-            <button class="update-button" onclick="inputData()">Update Diagram</button>
-            <button class="show-button" onclick="showData()">Tampilkan Data</button>
-            <button class="clear-button" onclick="clearData()">Hapus Data</button>
+            <button class="function-button" onclick="createDiagram()">Create Diagram</button>
+            <button class="function-button" onclick="showData()">Tampilkan Data</button>
+            <button class="function-button" onclick="clearData()">Hapus Data</button>
+            <button class="function-button" onclick="changeTitle()">Ganti JUdul</button>
+            <button class="function-button" onclick="addData()">Tambah Data</button>
+            <button class="function-button" onclick="EditData()">Edit Data</button>
+            <button class="function-button" onclick="deleteData()">Hapus Selektif Data</button>
         </div>
     </div>
 
     <script>
         let myChart = null;
 
+        // Fungsi -----------------------------------------------------------------
+        // Kecil ------------------------------------------------------------------
+
+        // Simpan data ke local storage
         function saveToLocalStorage(title, maxValue, data) {
             const chartData = {
                 title: title,
@@ -104,6 +86,7 @@
             localStorage.setItem('chartData', JSON.stringify(chartData));
         }
 
+        // Ambil data dari local storage
         function loadFromLocalStorage() {
             const storedData = localStorage.getItem('chartData');
             if (storedData) {
@@ -112,8 +95,28 @@
             }
         }
 
-        async function inputData() {
-            // Input judul dan jumlah data
+
+        // Hapus Semua Data
+        function clearData() {
+            localStorage.removeItem('chartData');
+            if (myChart) {
+                myChart.destroy();
+                myChart = null;
+            }
+            // Bersihkan canvas
+            const canvas = document.getElementById('Progrise');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+
+
+        // Fungsi -----------------------------------------------------------------
+        // Besar ------------------------------------------------------------------
+
+
+        // Input judul dan jumlah data
+        async function createDiagram() {
             const { value: formValues } = await Swal.fire({
                 title: 'Input Data Diagram',
                 html: `
@@ -214,58 +217,7 @@
             createChart(dataValues, chartTitle, parseFloat(maxValue));
         }
 
-        function createChart(data, title, maxValue) {
-            if (myChart) {
-                myChart.destroy();
-            }
 
-            const ctx = document.getElementById('Progrise').getContext('2d');
-            myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: data.map(item => item.name),
-                    datasets: [{
-                        label: title,
-                        data: data.map(item => item.value),
-                        backgroundColor: '#355E3B',
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: maxValue,
-                            ticks: {
-                                callback: function (value) {
-                                    return value.toFixed(2);
-                                }
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                        },
-                        tooltip: {
-                            enabled: true,
-                            callbacks: {
-                                label: function (context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    label += context.parsed.y.toFixed(2);
-                                    return label;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
 
         // Tampilkan semua data 
         async function showData() {
@@ -317,19 +269,8 @@
         }
 
 
-        // Hapus Semua Data
-        function clearData() {
-            localStorage.removeItem('chartData');
-            if (myChart) {
-                myChart.destroy();
-                myChart = null;
-            }
-            // Bersihkan canvas
-            const canvas = document.getElementById('Progrise');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
 
+        // Tombol hapus semua data
         async function clearData() {
             const result = await Swal.fire({
                 title: 'Konfirmasi',
@@ -368,9 +309,183 @@
         }
 
 
+
+        function changeTitle() {
+            Swal.fire({
+                title: 'Ganti Judul Diagram',
+                input: 'text',
+                inputLabel: 'Masukkan judul baru',
+                inputPlaceholder: 'Judul baru',
+                preConfirm: (newTitle) => {
+                    if (!newTitle) {
+                        Swal.showValidationMessage('Judul tidak boleh kosong');
+                        return false;
+                    }
+                    const storedData = JSON.parse(localStorage.getItem('chartData'));
+                    storedData.title = newTitle;
+                    localStorage.setItem('chartData', JSON.stringify(storedData));
+                    createChart(storedData.data, newTitle, storedData.maxValue);
+                    Swal.fire('Sukses', 'Judul telah diganti', 'success');
+                }
+            });
+        }
+
+
+        function addData() {
+            const storedData = JSON.parse(localStorage.getItem('chartData'));
+            if (!storedData) {
+                Swal.fire('Error', 'Tidak ada diagram untuk ditambahkan data', 'error');
+                return;
+            }
+
+            Swal.fire({
+                title: 'Tambah Data',
+                html: `
+            <input id="newName" class="swal2-input" placeholder="Nama baru">
+            <input id="newValue" type="number" class="swal2-input" placeholder="Nilai baru" min="0" step="0.01">
+        `,
+                focusConfirm: false,
+                preConfirm: () => {
+                    const newName = document.getElementById('newName').value;
+                    const newValue = parseFloat(document.getElementById('newValue').value);
+                    if (!newName || isNaN(newValue)) {
+                        Swal.showValidationMessage('Semua field harus diisi');
+                        return false;
+                    }
+                    if (newValue > storedData.maxValue) {
+                        Swal.showValidationMessage('Nilai tidak boleh melebihi batas maksimum');
+                        return false;
+                    }
+                    storedData.data.push({ name: newName, value: newValue });
+                    localStorage.setItem('chartData', JSON.stringify(storedData));
+                    createChart(storedData.data, storedData.title, storedData.maxValue);
+                    Swal.fire('Sukses', 'Data telah ditambahkan', 'success');
+                }
+            });
+        }
+
+
+
+        function EditData() {
+            const storedData = JSON.parse(localStorage.getItem('chartData'));
+            if (!storedData) {
+                Swal.fire('Error', 'Tidak ada data untuk diubah', 'error');
+                return;
+            }
+
+            let optionsHTML = '';
+            storedData.data.forEach((item, index) => {
+                optionsHTML += `<option value="${index}">${item.name} - ${item.value}</option>`;
+            });
+
+            Swal.fire({
+                title: 'Pilih Data untuk Diedit',
+                html: `
+            <select id="dataToEdit" class="swal2-input">${optionsHTML}</select>
+            <input id="editValue" type="number" class="swal2-input" placeholder="Nilai baru" min="0" step="0.01">
+        `,
+                preConfirm: () => {
+                    const index = document.getElementById('dataToEdit').value;
+                    const newValue = parseFloat(document.getElementById('editValue').value);
+                    if (isNaN(newValue) || newValue > storedData.maxValue) {
+                        Swal.showValidationMessage('Nilai tidak valid');
+                        return false;
+                    }
+                    storedData.data[index].value = newValue;
+                    localStorage.setItem('chartData', JSON.stringify(storedData));
+                    createChart(storedData.data, storedData.title, storedData.maxValue);
+                    Swal.fire('Sukses', 'Data telah diedit', 'success');
+                }
+            });
+        }
+
+
+
+        function deleteData() {
+            const storedData = JSON.parse(localStorage.getItem('chartData'));
+            if (!storedData) {
+                Swal.fire('Error', 'Tidak ada data untuk dihapus', 'error');
+                return;
+            }
+
+            let optionsHTML = '';
+            storedData.data.forEach((item, index) => {
+                optionsHTML += `<option value="${index}">${item.name} - ${item.value}</option>`;
+            });
+
+            Swal.fire({
+                title: 'Pilih Data untuk Dihapus',
+                html: `<select id="dataToDelete" class="swal2-input">${optionsHTML}</select>`,
+                preConfirm: () => {
+                    const index = document.getElementById('dataToDelete').value;
+                    storedData.data.splice(index, 1);
+                    localStorage.setItem('chartData', JSON.stringify(storedData));
+                    createChart(storedData.data, storedData.title, storedData.maxValue);
+                    Swal.fire('Sukses', 'Data telah dihapus', 'success');
+                }
+            });
+        }
+
+
+
+        // Membuat chart
+        function createChart(data, title, maxValue) {
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            const ctx = document.getElementById('Progrise').getContext('2d');
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(item => item.name),
+                    datasets: [{
+                        label: title,
+                        data: data.map(item => item.value),
+                        backgroundColor: '#355E3B',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: maxValue,
+                            ticks: {
+                                callback: function (value) {
+                                    return value.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                        },
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                label: function (context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.parsed.y.toFixed(2);
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+
         // Saat halaman dimuat, coba ambil data dari localStorage
         window.onload = loadFromLocalStorage;
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>
