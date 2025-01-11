@@ -1,0 +1,39 @@
+.input-pair {
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 10px;
+}
+.input-pair input {
+    width: calc(100%) !important;
+    margin: 0 !important;
+}
+.swal2-label {
+    display: block;
+    text-align: left;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+.button-container {
+    position: relative;
+    bottom: 0;
+    left: 0;
+    margin: 20px;
+}
+.function-button {
+    padding: 10px 20px;
+    background-color: #355E3B;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+.function-button:hover {
+    background-color: #2A4730;
+}
+.chart-container {
+    position: relative;
+    width: 80%;
+    height: 400px;
+    margin: auto;
+}
