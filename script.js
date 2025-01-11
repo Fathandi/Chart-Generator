@@ -1,5 +1,3 @@
-// Saat halaman dimuat, coba ambil data dari localStorage
-window.onload = loadFromLocalStorage;
 let myChart = null;
 
 
@@ -439,3 +437,9 @@ async function clearData() {
         });
     }
 }
+
+
+
+
+// Saat halaman dimuat, coba ambil data dari localStorage
+window.onload = loadFromLocalStorage;
