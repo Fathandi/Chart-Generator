@@ -1,4 +1,3 @@
-Berikut adalah versi yang lebih baik dari `README.md` dengan penjelasan yang lebih mendalam dan penggunaan potongan kode unggulan untuk menggambarkan program secara keseluruhan:
 
 ---
 
