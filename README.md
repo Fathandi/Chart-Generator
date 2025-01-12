@@ -172,4 +172,4 @@ Jika Anda ingin berkontribusi pada proyek ini, silakan buka issue atau pull requ
 
 ---
 
-Dengan penjelasan yang lebih mendalam dan potongan kode unggulan, pengguna dapat lebih memahami cara kerja aplikasi dan bagaimana cara menggunakannya dengan efektif.
+
