@@ -1,6 +1,6 @@
-# Diagram Generator
+# Chart Generator
 
-**Diagram Generator** adalah aplikasi web interaktif yang memungkinkan pengguna untuk membuat, mengelola, dan memvisualisasikan data dalam bentuk diagram batang (bar chart) menggunakan **Chart.js**. Aplikasi ini dilengkapi dengan fitur-fitur seperti menambahkan, mengedit, menghapus data, serta menyimpan dan memuat data dari **localStorage**. Dengan antarmuka yang ramah pengguna dan pop-up interaktif menggunakan **SweetAlert2**, aplikasi ini cocok untuk siapa saja yang ingin memvisualisasikan data secara cepat dan mudah.
+**Chart Generator** adalah aplikasi web interaktif yang memungkinkan pengguna untuk membuat, mengelola, dan memvisualisasikan data dalam bentuk diagram batang (bar chart) menggunakan **Chart.js**. Aplikasi ini dilengkapi dengan fitur-fitur seperti menambahkan, mengedit, menghapus data, serta menyimpan dan memuat data dari **localStorage**. Dengan antarmuka yang ramah pengguna dan pop-up interaktif menggunakan **SweetAlert2**, aplikasi ini cocok untuk siapa saja yang ingin memvisualisasikan data secara cepat dan mudah.
 
 ---
 
